@@ -1,6 +1,6 @@
 # qb-pass
 
-qutebrowser userscripts for managing [pass](https://www.passwordstore.org/) passwords via [rofi](https://github.com/davatorium/rofi).
+qutebrowser userscripts for managing [pass](https://www.passwordstore.org/) passwords via a dmenu-compatible picker, [rofi](https://github.com/davatorium/rofi) by default.
 
 Assumes a flat password store layout: `$PASSWORD_STORE_DIR/$HOST/$USER` (e.g. `~/.password-store/github.com/nat`).
 
@@ -19,7 +19,7 @@ The install script and manual installation instructions below also optionally se
 ## Dependencies
 
 - [pass](https://www.passwordstore.org/) — the standard Unix password manager
-- [rofi](https://github.com/davatorium/rofi) — dmenu-compatible launcher used as the picker
+- a dmenu-compatible picker, [rofi](https://github.com/davatorium/rofi) by default
 - A GPG key set up for use with `pass`
 - For contexts without an interactive terminal (such as qutebrowser): a GUI pinentry program — [pinentry-rofi](https://github.com/plattfot/pinentry-rofi) is recommended
 
@@ -81,7 +81,15 @@ The script will:
 
 ## Usage
 
-All commands that take a host as their sole argument. When invoked via the keybindings or aliases above, `{url:host}` is substituted automatically by qutebrowser. rofi will then present a prompt to confirm or override the host, followed by a prompt to select or enter a username.
+All commands take a host as their sole positional argument. When invoked via the keybindings or aliases above, `{url:host}` is substituted automatically by qutebrowser. The picker will then present a prompt to confirm or override the host, followed by a prompt to select or enter a username.
+
+All three scripts also accept a `--dmenu-invocation <cmd>` flag, which must come before the host argument. It sets the dmenu-compatible command used for prompts, e.g.:
+
+```
+:copy-password --dmenu-invocation "wofi --dmenu" example.com
+```
+
+Defaults to `rofi -dmenu` when omitted. The command string is split on whitespace only, so it works for simple invocations like `rofi -dmenu`, `wofi --dmenu`, or `dmenu -p 'pick one'`. Each script appends its own `-p '<prompt>'` (and `-password` for `new-password`'s manual entry) after your invocation, so if your command already includes a `-p`, the script's own prompt flag is appended last and takes precedence.
 
 ### `,pc` — `copy-password`
 
